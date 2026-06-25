@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About — Thesis Website</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="about.css?v=7">
+</head>
+<body class="about-page">
+  <nav class="sidenav">
+    <a href="index.html#intro" class="sidenav-link">INTRO</a>
+    <a href="network.html" class="sidenav-link">NETWORK</a>
+    <a href="image-selection.html" class="sidenav-link">IMAGE SELECTION</a>
+    <a href="image-atlas-intro.html" class="sidenav-link">IMAGE ATLAS</a>
+    <a href="hashtags.html" class="sidenav-link">HASHTAGS</a>
+    <a href="users.html" class="sidenav-link">USERS</a>
+    <a href="about.html" class="sidenav-link active">ABOUT</a>
+  </nav>
+
+  <main class="about-main">
+    <section class="about-hero">
+      <div class="about-column">
+        <h1>What</h1>
+        <p>This project investigates how the female body is fragmented, sexualized, and visually standardized on Instagram.</p>
+        <p>Through a combination of digital methods, qualitative visual analysis, and network visualization, the research explores how body parts such as legs, buttocks and feet become recurring visual units optimized for visibility and engagement within platform culture.</p>
+        <p>Rather than focusing on individual users, the project analyzes recurring visual patterns, aesthetic conventions, and platform dynamics that contribute to the normalization of objectification in everyday social media environments.</p>
+        <p>This website is the final outcome of a Master's Thesis project in Communication Design at Politecnico di Milano.</p>
+      </div>
+
+      <div class="about-column about-why">
+        <h1>Why</h1>
+        <p>The project originates from a broader question: how do social media platforms shape the way bodies are seen, fragmented, and consumed online?</p>
+        <p>The research builds on feminist media theory, platform studies, and data feminism to investigate how pornographic visual codes progressively merge with mainstream digital aesthetics such as fitness, beauty, fashion, and influencer culture.</p>
+        <p>On Instagram, sexualization rarely appears as an isolated category. Instead, it becomes embedded within ordinary content through poses, framing, editing styles, algorithmic recommendations, and engagement-driven visibility systems.</p>
+        <p>The goal of the project is not to judge users or individual images, but to reveal the visual and infrastructural logic behind these representations.</p>
+      </div>
+    </section>
+
+    <section class="about-method">
+      <div class="about-method-copy">
+        <h2>How</h2>
+
+        <article class="about-step">
+          <h3><span>1.</span> Exploratory Phase</h3>
+          <p>The research began with an exploratory phase focused on understanding how Instagram circulates visually fragmented bodies through its ecosystem. The collection process started from a set of seed hashtags:</p>
+          <ul>
+            <li>#woman</li>
+            <li>#beautifulwoman</li>
+            <li>#sexywoman</li>
+          </ul>
+          <p>These queries were intentionally selected to observe a gradual transition between seemingly neutral representation and explicitly sexualized content.</p>
+          <p>Using a semi-guided snowballing approach, the research followed hashtag connections collecting the posts suggested by Instagram. Instead of relying entirely on automated scraping, the dataset was collected through situated navigation using Zeeschuimer, a browser extension designed for platform data collection.</p>
+          <p>This approach allowed the research to preserve the experience of real platform exploration while documenting how Instagram itself guides users through progressively connected visual environments. The exploratory phase resulted in a dataset of more than 4,000 public posts.</p>
+        </article>
+
+        <article class="about-step">
+          <h3><span>2.</span> Dataset Construction</h3>
+          <p>The exported .ndjson files were processed and normalized using Python scripts. The cleaning phase included duplicate removal, field selection, hashtag extraction, engagement calculation, normalization of textual metadata, image download and archiving.</p>
+          <p>The final dataset included post metadata, captions, hashtags, likes and comments, usernames, timestamps and image URLs.</p>
+          <p>At this stage, the project shifts from raw platform traces to a constructed dataset, acknowledging that data is never neutral but always shaped by methodological and technical choices.</p>
+        </article>
+
+        <article class="about-step">
+          <h3><span>3.</span> Hashtags Network Analysis</h3>
+          <p>After collecting the dataset, hashtags were extracted and cleaned using Python. The dataset was then converted into a bipartite network connecting posts and hashtags through Table2Net. The resulting network was imported into Gephi, where a force-directed layout was applied to spatially organize hashtags according to their patterns of co-occurrence.</p>
+          <p>In the network, nodes represent hashtags, while edges represent co-occurrence relationships between hashtags appearing in the same post. Node size reflects the number of occurrences of each hashtag, while spatial proximity indicates stronger semantic relationships based on shared usage patterns.</p>
+          <p>To support the interpretation of the network, hashtags were manually categorized according to their semantic meaning. This process resulted in 10 macro-categories and 27 subcategories.</p>
+          <p>The final visualization provides an overview of the semantic environment surrounding representations of the female body on Instagram, making visible the connections between topics, communities and recurring visual narratives that emerge through the platform's hashtag infrastructure.</p>
+        </article>
+
+        <article class="about-step">
+          <h3><span>4.</span> Image Selection and Analysis</h3>
+          <p>To move from hashtags to visual representations, a sample of images was selected from the dataset and analysed. Images were chosen based on the presence of body fragmentation, a recurring visual strategy in which specific body parts become the primary focus of the image.</p>
+          <p>Three dominant categories emerged from the dataset: glutes, legs, and feet. Images were included whenever one of these body parts constituted the main visual focus, even when other parts of the body remained visible.</p>
+          <p>A coding framework was developed to systematically analyse the sample. Drawing on literature on objectification and sexualization, images were examined according to four dimensions: poses, erotic actions, erotic markers, and settings.</p>
+          <p>Rather than focusing on individual images, the analysis aimed to identify recurring visual patterns and conventions across different types of content.</p>
+        </article>
+
+        <article class="about-step">
+          <h3><span>5.</span> Visualization</h3>
+          <p>The final stage of the project involved transforming the research into an interactive visual system.</p>
+          <p>The challenge was to represent these dynamics without reproducing the same mechanisms of objectification analyzed throughout the research.</p>
+          <p>The project treats visualization as an interpretative and political practice capable of exposing hidden structures within digital visual culture.</p>
+        </article>
+      </div>
+
+      <aside class="about-method-visual" aria-label="Research process diagram">
+        <img src="Assets/about/Group%2095.png" alt="Research methodology flow diagram">
+      </aside>
+    </section>
+
+    <footer class="about-footer">
+      <div>
+        <span>Author</span>
+        <strong>Petra Bachiorrini</strong>
+      </div>
+      <div>
+        <span>Academic Supervisor</span>
+        <strong>Prof. Elena Aversa</strong>
+      </div>
+      <div>
+        <strong>LM in Communication Design</strong>
+        <span>Politecnico di Milano</span>
+        <span>Final Thesis Project</span>
+        <span>A.Y. 2025/26</span>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Atlas (Fixed) — Thesis Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="image-atlas-fixed.css?v=6">
+</head>
+<body>
+
+  <!-- LEFT SIDEBAR NAV -->
+  <nav class="sidenav">
+    <a href="index.html#intro" class="sidenav-link">INTRO</a>
+    <a href="network.html" class="sidenav-link">NETWORK</a>
+    <a href="image-selection.html" class="sidenav-link">IMAGE SELECTION</a>
+    <a href="image-atlas-intro.html" class="sidenav-link active">IMAGE ATLAS</a>
+    <a href="hashtags.html" class="sidenav-link">HASHTAGS</a>
+    <a href="users.html" class="sidenav-link">USERS</a>
+    <a href="about.html" class="sidenav-link">ABOUT</a>
+  </nav>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <!-- TOP BODY PART TABS -->
+    <div class="body-tabs">
+      <button class="tab active" data-part="glutes">GLUTES<sup>180</sup></button>
+      <button class="tab" data-part="legs">LEGS<sup>102</sup></button>
+      <button class="tab" data-part="feet">FEET<sup>293</sup></button>
+    </div>
+
+    <!-- CONTENT ROW -->
+    <div class="content-row">
+
+      <!-- IMAGE AREA (no scroll) -->
+      <div class="image-area" id="imageArea"></div>
+
+      <!-- RIGHT EXPLORE SIDEBAR -->
+      <aside class="explore-sidebar">
+        <div class="explore-header">EXPLORE:</div>
+
+        <div class="explore-item" data-dim="pose">
+          <div class="explore-label">POSE</div>
+          <div class="explore-desc">
+            Indicates the physical position of the body, without reference to expression or sexual content.
+          </div>
+        </div>
+
+        <div class="explore-item" data-dim="setting">
+          <div class="explore-label">SETTING</div>
+          <div class="explore-desc">
+            The spatial and visual context surrounding the subject. Settings are not neutral backdrops, they function as contextual cues that frame the body within an eroticized logic.
+          </div>
+        </div>
+
+        <div class="explore-item" data-dim="erotic-action">
+          <div class="explore-label">EROTIC ACTION</div>
+          <div class="explore-desc">
+            A gesture, movement, or behavior that activates an erotic reading of the image.<br><br>
+            It refers to performed acts that signal an orientation toward the viewer's desire, often through choreographed positions that direct attention to specific body parts, in line with recurring conventions identified in the literature on sexualization.
+          </div>
+        </div>
+
+        <div class="explore-item" data-dim="erotic-marker">
+          <div class="explore-label">EROTIC MARKER</div>
+          <div class="explore-desc">
+            A visually coded object or garment culturally associated with sexualization or fetish aesthetics.<br><br>
+            Erotic markers eroticize the body through what it wears rather than through nudity, and belong to a shared visual repertoire derived from pornographic iconography.
+          </div>
+        </div>
+
+        <nav class="atlas-section-links" aria-label="Related sections">
+          <a href="users.html" class="atlas-section-link">→ who is posting this?</a>
+          <a href="hashtags.html" class="atlas-section-link">→ explore the image hashtag network</a>
+        </nav>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <div class="atlas-lightbox" id="atlasLightbox" aria-hidden="true">
+    <button type="button" class="atlas-lightbox-backdrop" id="atlasLightboxBackdrop" aria-label="Close expanded image"></button>
+    <button type="button" class="atlas-lightbox-nav atlas-lightbox-prev" id="atlasLightboxPrev" aria-label="Previous image">←</button>
+    <div class="atlas-lightbox-card" role="dialog" aria-modal="true" aria-labelledby="atlasLightboxTitle">
+      <div class="atlas-lightbox-media">
+        <img src="" alt="" id="atlasLightboxImage">
+        <div class="atlas-lightbox-meta">
+          <div class="atlas-lightbox-title" id="atlasLightboxTitle"></div>
+          <div class="atlas-lightbox-tags" id="atlasLightboxTags"></div>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="atlas-lightbox-nav atlas-lightbox-next" id="atlasLightboxNext" aria-label="Next image">→</button>
+  </div>
+
+  <script src="image-atlas-data.js?v=7"></script>
+  <script src="image-atlas-flat.js"></script>
+  <script src="image-atlas-metadata.js"></script>
+  <script src="image-atlas-fixed.js?v=4"></script>
+</body>
+</html>

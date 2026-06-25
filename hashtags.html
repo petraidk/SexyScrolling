@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hashtags — The Digital Body Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="hashtags.css?v=2">
+  <script src="https://unpkg.com/graphology@0.25.1/dist/graphology.umd.min.js"></script>
+  <script src="https://unpkg.com/sigma@2.4.0/build/sigma.min.js"></script>
+  <script src="hashtag-bipartite-data.js?v=1"></script>
+</head>
+<body class="hashtags-body">
+
+  <nav class="sidenav">
+    <a href="index.html#intro"       class="sidenav-link">INTRO</a>
+    <a href="network.html"           class="sidenav-link">NETWORK</a>
+    <a href="image-selection.html"   class="sidenav-link">IMAGE SELECTION</a>
+    <a href="image-atlas-intro.html" class="sidenav-link">IMAGE ATLAS</a>
+    <a href="hashtags.html"          class="sidenav-link active">HASHTAGS</a>
+    <a href="users.html"             class="sidenav-link">USERS</a>
+    <a href="about.html"             class="sidenav-link">ABOUT</a>
+  </nav>
+
+  <main class="hashtags-main">
+    <section class="hashtags-layout">
+      <div class="hashtags-copy">
+        <h1 class="hashtags-title">Hashtag network from selected images</h1>
+
+        <div class="hashtags-text">
+          <p>
+            This shows that the images do not rely exclusively on explicit or fetish-related tags.
+            Instead, they combine fragmented-body hashtags with aesthetic, lifestyle, fashion, and visibility-related hashtags.
+          </p>
+          <p class="hashtags-text-strong">
+            This hybrid use of hashtags allows sexualised images to circulate beyond niche or explicit contexts, blending into everyday content.
+          </p>
+        </div>
+
+        <div class="hashtags-links">
+          <a href="users.html" class="hashtags-link">→ who is posting this?</a>
+          <a href="image-atlas-intro.html" class="hashtags-link">→ explore the image atlas</a>
+        </div>
+      </div>
+
+      <div class="hashtags-network-area">
+        <div class="hashtags-filterbar" aria-label="Fragment filters">
+          <button type="button" class="hashtags-filter active" data-fragment="All">All</button>
+          <button type="button" class="hashtags-filter hashtags-filter-feet" data-fragment="Feet">Feet</button>
+          <button type="button" class="hashtags-filter hashtags-filter-legs" data-fragment="Legs">Legs</button>
+          <button type="button" class="hashtags-filter hashtags-filter-glutes" data-fragment="Butt">Glutes</button>
+          <label class="hashtags-density">
+            <input type="checkbox" id="hashtagsRecurring">
+            recurring hashtags
+          </label>
+        </div>
+
+        <div class="hashtags-zoom-tools" aria-label="Graph zoom controls">
+          <button type="button" class="hashtags-tool-button" id="hashtagsZoomIn" aria-label="Zoom in">+</button>
+          <button type="button" class="hashtags-tool-button" id="hashtagsZoomOut" aria-label="Zoom out">−</button>
+          <button type="button" class="hashtags-tool-button hashtags-tool-reset" id="hashtagsZoomReset">reset</button>
+        </div>
+
+        <div class="hashtags-network-viewport" id="hashtagsGraph" aria-label="Interactive bipartite hashtag and image network">
+          <div class="hashtags-thumbnails" id="hashtagsThumbnails" aria-hidden="true"></div>
+        </div>
+
+        <aside class="hashtags-inspector" id="hashtagsInspector">
+          <div class="hashtags-inspector-kicker">selected node</div>
+          <h2 id="hashtagsInspectorTitle">Hover or click the network</h2>
+          <p id="hashtagsInspectorText">Hashtags illuminate their connected images. Images reveal the semantic tags attached to the fragment.</p>
+          <div class="hashtags-inspector-tags" id="hashtagsInspectorTags"></div>
+          <div class="hashtags-inspector-images" id="hashtagsInspectorImages"></div>
+        </aside>
+
+        <p class="hashtags-zoom-hint">scroll to zoom, drag to move, hover to isolate, click to inspect</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="hashtags-interactive.js?v=1"></script>
+
+</body>
+</html>

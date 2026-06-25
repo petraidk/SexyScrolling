@@ -1,0 +1,44 @@
+# macOS / local editor files
+.DS_Store
+**/.DS_Store
+.claude/
+
+# Raw research data and working exports not used by the public site
+DATASET DEF.csv
+network-data.json
+network.json
+Network/network.json
+Network/examples/
+Assets/about/ABOUT.svg
+Assets/about/ABOUT@2x.png
+Assets/about/Group 95.svg
+Assets/about-figma.png
+ABC Diatype/**
+!ABC Diatype/ABC Diatype Variable/
+!ABC Diatype/ABC Diatype Variable/ABCDiatypeVariable-Trial.woff
+!ABC Diatype/ABC Diatype Variable/ABCDiatypeVariable-Trial.woff2
+
+# Old or duplicate local drafts
+index2.html
+indexvecchio.html
+project.html
+Network.html
+image-atlas.html
+image-atlas.css
+image-atlas.js
+script.js
+website 2/
+screen sito/
+
+# Temporary screenshots / local test output
+*.log
+atlas-cutouts/*.png
+image atlas/Feet/Feet_Action/
+image atlas/Feet/Feet_Setting/
+image atlas/Legs/Legs_Action/
+image atlas/Legs/Legs_Setting/
+image atlas/butt/GLUTES_ACTION2/
+image atlas/butt/BUTT_SETTING/
+image atlas/Feet/Feet_Marker/
+image atlas/Legs/Legs_MARKER2/
+image atlas/butt/GLUTES_MARKER2/

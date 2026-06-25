@@ -1,0 +1,115 @@
+/* ========================= */
+/* IMAGE ATLAS INTRO PAGE    */
+/* ========================= */
+
+body.atlas-intro-body {
+  background: #000;
+  overflow: hidden;
+  margin: 0;
+}
+
+.intro-panels {
+  position: fixed;
+  left: 51px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+}
+
+/* ========================= */
+/* PANEL                     */
+/* ========================= */
+
+.intro-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  border: 0.5px solid #fff;
+  background: #000;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.15s;
+}
+
+/* Width proportions from Figma: 577 : 351 : 942 */
+.panel-glutes { flex: 577; }
+.panel-legs   { flex: 351; }
+.panel-feet   { flex: 942; }
+
+/* ========================= */
+/* TAB HEADER                */
+/* ========================= */
+
+.panel-tab {
+  flex-shrink: 0;
+  height: 50px;
+  background: #fff;
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 15px;
+  border-bottom: 1px solid #000;
+  gap: 2px;
+}
+
+.panel-tab sup {
+  font-size: 11px;
+  font-weight: 400;
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
+/* ========================= */
+/* IMAGE MOSAIC              */
+/* ========================= */
+
+.panel-mosaic {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 7px;
+  padding: 10px 10px 10px 15px;
+  overflow: hidden;
+  align-content: flex-start;
+}
+
+.mosaic-img {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.mosaic-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ========================= */
+/* HOVER                     */
+/* ========================= */
+
+.intro-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0);
+  transition: background 0.2s;
+  pointer-events: none;
+}
+
+.intro-panel:hover::after {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.panel-glutes:hover {background: rgb(255, 0, 0); }
+.panel-legs:hover   { background: rgb(255, 0, 191); }
+.panel-feet:hover   { background: rgb(200, 255, 0); }

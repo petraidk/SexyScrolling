@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Atlas — The Digital Body Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="image-atlas-intro.css">
+</head>
+<body class="atlas-intro-body">
+
+  <!-- NAVBAR -->
+  <nav class="sidenav">
+    <a href="index.html#intro"       class="sidenav-link">INTRO</a>
+    <a href="network.html"           class="sidenav-link">NETWORK</a>
+    <a href="image-selection.html"   class="sidenav-link">IMAGE SELECTION</a>
+    <a href="image-atlas-intro.html" class="sidenav-link active">IMAGE ATLAS</a>
+    <a href="hashtags.html"          class="sidenav-link">HASHTAGS</a>
+    <a href="users.html"             class="sidenav-link">USERS</a>
+    <a href="about.html"             class="sidenav-link">ABOUT</a>
+  </nav>
+
+  <!-- THREE CLICKABLE PANELS -->
+  <div class="intro-panels">
+
+    <a href="image-atlas-fixed.html#glutes" class="intro-panel panel-glutes">
+      <div class="panel-tab">GLUTES<sup>180</sup></div>
+      <div class="panel-mosaic" id="mosaic-glutes"></div>
+    </a>
+
+    <a href="image-atlas-fixed.html#legs" class="intro-panel panel-legs">
+      <div class="panel-tab">LEGS<sup>102</sup></div>
+      <div class="panel-mosaic" id="mosaic-legs"></div>
+    </a>
+
+    <a href="image-atlas-fixed.html#feet" class="intro-panel panel-feet">
+      <div class="panel-tab">FEET<sup>293</sup></div>
+      <div class="panel-mosaic" id="mosaic-feet"></div>
+    </a>
+
+  </div>
+
+  <script src="image-atlas-flat.js"></script>
+  <script>
+    function fillMosaic(containerId, images) {
+      const container = document.getElementById(containerId);
+      images.forEach(src => {
+        const div = document.createElement('div');
+        div.className = 'mosaic-img';
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.loading = 'lazy';
+        div.appendChild(img);
+        container.appendChild(div);
+      });
+    }
+
+    fillMosaic('mosaic-glutes', ATLAS_FLAT.glutes || []);
+    fillMosaic('mosaic-legs',   ATLAS_FLAT.legs   || []);
+    fillMosaic('mosaic-feet',   ATLAS_FLAT.feet   || []);
+  </script>
+
+</body>
+</html>

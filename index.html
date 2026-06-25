@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Digital Body Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css?v=17">
+
+</head>
+
+<body>
+
+  <!-- ========================= -->
+  <!-- NAVBAR                    -->
+  <!-- ========================= -->
+  <nav class="sidenav">
+    <a href="#intro"    class="sidenav-link active">INTRO</a>
+    <a href="network.html"  class="sidenav-link">NETWORK</a>
+    <a href="image-selection.html" class="sidenav-link">IMAGE SELECTION</a>
+    <a href="image-atlas-intro.html" class="sidenav-link">IMAGE ATLAS</a>
+    <a href="hashtags.html" class="sidenav-link">HASHTAGS</a>
+    <a href="users.html" class="sidenav-link">USERS</a>
+    <a href="about.html" class="sidenav-link">ABOUT</a>
+  </nav>
+
+
+  <!-- ========================= -->
+  <!-- LANDING PAGE              -->
+  <!-- ========================= -->
+
+  <section id="landing" class="landing-section" aria-labelledby="landing-title">
+    <h1 id="landing-title" class="landing-title">
+      <img class="landing-title-frame is-active" src="intro/landing_title.svg" alt="Sex Scrolling">
+      <img class="landing-title-frame" src="intro/Vector.svg" alt="" aria-hidden="true">
+      <img class="landing-title-frame" src="intro/Vector-1.svg" alt="" aria-hidden="true">
+    </h1>
+
+    <p class="landing-subtitle landing-subtitle-left">
+      Mapping the sexualization of the female body on Instagram
+    </p>
+    <p class="landing-subtitle landing-subtitle-right">
+      A data-driven exploration of female body representation
+    </p>
+
+    <a class="landing-enter" href="#intro" aria-label="Enter the thesis website">
+      <img src="intro/landing-arrows.png" alt="" aria-hidden="true">
+    </a>
+  </section>
+
+  <script>
+    (() => {
+      const titleFrames = Array.from(document.querySelectorAll('.landing-title-frame'));
+      let activeFrame = 0;
+
+      if (titleFrames.length < 2) return;
+
+      window.setInterval(() => {
+        titleFrames[activeFrame].classList.remove('is-active');
+        activeFrame = (activeFrame + 1) % titleFrames.length;
+        titleFrames[activeFrame].classList.add('is-active');
+      }, 300);
+    })();
+  </script>
+
+
+  <!-- ========================= -->
+  <!-- SCENE 1: SCROLLING        -->
+  <!-- QUESTIONS                 -->
+  <!-- ========================= -->
+
+  <section id="intro" class="iq-section">
+    <div class="iq-track">
+      <div class="iq-stage">
+        <div class="iq-q-wrapper iq-q1-wrapper" id="iq-q1">
+          <p class="iq-q">How often do sexualised images appear on your instagram feed even when you are not looking for them?</p>
+        </div>
+
+        <div class="iq-q-wrapper iq-q2-wrapper" id="iq-q2">
+          <p class="iq-q">What defines what is sexual or not?</p>
+        </div>
+
+        <div class="iq-q-wrapper iq-q3-wrapper" id="iq-q3">
+          <p class="iq-q">Can an <span class="iq-hashtag-word" id="iqHashtagWord">hashtag</span> be sexual?</p>
+        </div>
+
+        <div class="iq-video" aria-label="Instagram feed scrolling video">
+          <video autoplay muted loop playsinline preload="metadata" disablepictureinpicture>
+            <source src="intro/VIDEO_INTRO.MP4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================= -->
+  <!-- SCENE 2: #WOMAN           -->
+  <!-- ========================= -->
+
+  <section class="iw-section">
+    <div class="iw-stage">
+      <p class="iw-label">What appears when you search for this on Instagram?</p>
+      <a href="#intro-grid" class="iw-hashtag" id="iwHashtagLink">#woman</a>
+    </div>
+  </section>
+
+  <div class="iq-hashtag-flight" id="iqHashtagFlight" aria-hidden="true">hashtag</div>
+
+
+  <!-- ========================= -->
+  <!-- SCENE 3–4: IMAGE GRID     -->
+  <!-- SCROLL TRANSITION         -->
+  <!-- ========================= -->
+
+  <section id="intro-grid" class="ig-section">
+    <div class="ig-track">
+      <div class="ig-sticky">
+
+        <!-- #WOMAN label above grid -->
+        <div class="ig-woman-label">#WOMAN</div>
+
+        <!-- Left text (Phase A) -->
+        <p class="ig-text ig-text-a">posts representing<br>the female body<br>were selected</p>
+
+        <!-- Right text (Phase B) -->
+        <p class="ig-text ig-text-b">in order to explore<br>the hashtags<br>associated with them</p>
+
+        <!-- 3×3 image grid (order matches Figma cell positions: row-by-row, col-by-col) -->
+        <div class="ig-grid">
+          <div class="ig-cell"><img src="intro/grid-01.jpg" alt=""></div>
+          <div class="ig-cell"><img src="intro/grid-03.jpg" alt=""></div>
+          <div class="ig-cell"><img src="intro/grid-05.jpg" alt=""></div>
+          <div class="ig-cell"><img src="intro/grid-09.jpg" alt=""></div>
+          <div class="ig-cell ig-cell-focus"><img src="intro/grid-08.jpg" alt=""></div>
+          <div class="ig-cell"><img src="intro/grid-07.jpg" alt=""></div>
+          <div class="ig-cell"><img src="intro/grid-02.jpg" alt=""></div>
+          <div class="ig-cell"><img src="intro/grid-04.jpg" alt=""></div>
+          <div class="ig-cell"><img src="intro/grid-06.jpg" alt=""></div>
+          <!-- Dark overlay: left column (Phase B) -->
+          <div class="ig-overlay ig-overlay-left"></div>
+          <!-- Dark overlay: bottom-right cell (Phase B) -->
+          <div class="ig-overlay ig-overlay-br"></div>
+        </div>
+
+        <!-- Hashtags below grid (Phase B) -->
+        <div class="ig-hashtags">
+          <p>#instasnapchat #carstagram #hot #sunnyday #garterbeltsaresexy #handmade #hotgirl #midjourney #pinup #instamood #visitdubai</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================= -->
+  <!-- SCENE 5: NETWORK PREVIEW  -->
+  <!-- ========================= -->
+
+  <section class="inp-section">
+    <div class="inp-copy">
+      <a href="network.html" class="inp-text inp-text-link">The result is a network of hashtags, showing how different topics are interconnected through shared posts. →</a>
+    </div>
+    <a href="network.html" class="inp-img-link">
+      <img src="intro/network-preview.png" alt="Hashtag network" class="inp-img">
+    </a>
+  </section>
+
+
+  <!-- ========================= -->
+  <!-- SCRIPTS                   -->
+  <!-- ========================= -->
+
+  <!-- Scene 3–4 scroll-driven transitions -->
+  <script>
+    (function () {
+      const section = document.querySelector('.iq-section');
+      const sourceWord = document.getElementById('iqHashtagWord');
+      const targetWord = document.getElementById('iwHashtagLink');
+      const flight = document.getElementById('iqHashtagFlight');
+      const videoPanel = section.querySelector('.iq-video');
+      const questions = [
+        { element: document.getElementById('iq-q1'), start: -0.07, end: 0.30 },
+        { element: document.getElementById('iq-q2'), start: 0.35, end: 0.63 },
+        { element: document.getElementById('iq-q3'), start: 0.68, end: 1.03 }
+      ];
+      if (!section) return;
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function mapRange(value, inStart, inEnd, outStart, outEnd) {
+        if (value <= inStart) return outStart;
+        if (value >= inEnd) return outEnd;
+        const t = (value - inStart) / (inEnd - inStart);
+        return outStart + (outEnd - outStart) * t;
+      }
+
+      function updateHashtagFlight(progress) {
+        if (!sourceWord || !targetWord || !flight) return;
+
+        const start = 0.34;
+        const end = 0.64;
+
+        if (progress <= start || progress >= end) {
+          flight.style.opacity = 0;
+          flight.textContent = 'hashtag';
+          return;
+        }
+
+        const t = (progress - start) / (end - start);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const source = sourceWord.getBoundingClientRect();
+        const target = targetWord.getBoundingClientRect();
+        const sourceX = source.left + source.width * 0.5;
+        const sourceY = source.top + source.height * 0.55;
+        const targetX = target.left + target.width * 0.5;
+        const targetY = target.top + target.height * 0.5;
+        const currentX = sourceX + (targetX - sourceX) * eased;
+        const currentY = sourceY + (targetY - sourceY) * eased;
+        const scale = 1 + (1.45 - 1) * eased;
+        const opacity = Math.sin(t * Math.PI);
+        const morphThreshold = 0.7;
+
+        flight.textContent = t > morphThreshold ? '#woman' : 'hashtag';
+        flight.style.opacity = opacity;
+        flight.style.transform = `translate(${currentX}px, ${currentY}px) translate(-50%, -50%) scale(${scale})`;
+      }
+
+      function updateIntroQuestions() {
+        const rect = section.getBoundingClientRect();
+        const travel = Math.max(1, section.offsetHeight - window.innerHeight);
+        const progress = clamp(-rect.top / travel, 0, 1);
+
+        questions.forEach(({ element, start, end }) => {
+          if (!element) return;
+
+          const fadeDistance = 0.07;
+          const fadeIn = clamp((progress - start) / fadeDistance, 0, 1);
+          const fadeOut = clamp((end - progress) / fadeDistance, 0, 1);
+          const opacity = Math.min(fadeIn, fadeOut);
+          const offset = (1 - fadeIn) * 80 - (1 - fadeOut) * 60;
+
+          element.style.opacity = opacity;
+          element.style.visibility = opacity > 0.01 ? 'visible' : 'hidden';
+          element.style.transform = `translateY(${offset}px)`;
+        });
+
+        if (videoPanel) {
+          const videoOffset = mapRange(progress, 0, 1, 75, -90);
+          videoPanel.style.transform = `translateY(${videoOffset}vh)`;
+        }
+
+        updateHashtagFlight(progress);
+      }
+
+      window.addEventListener('scroll', updateIntroQuestions, { passive: true });
+      window.addEventListener('resize', updateIntroQuestions);
+      updateIntroQuestions();
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const section = document.querySelector('.iw-section');
+      const hashtag = document.getElementById('iwHashtagLink');
+      const label = section?.querySelector('.iw-label');
+      const colors = ['#ccff00', '#ff009d', '#ff2529'];
+      let colorIndex = 0;
+      let colorTimer = null;
+
+      if (!section || !hashtag) return;
+
+      function startColorCycle() {
+        if (colorTimer !== null) return;
+
+        colorIndex = 0;
+        hashtag.style.color = colors[colorIndex];
+        colorTimer = window.setInterval(() => {
+          colorIndex = (colorIndex + 1) % colors.length;
+          hashtag.style.color = colors[colorIndex];
+        }, 300);
+      }
+
+      function stopColorCycle() {
+        if (colorTimer !== null) {
+          window.clearInterval(colorTimer);
+          colorTimer = null;
+        }
+        hashtag.style.removeProperty('color');
+      }
+
+      function updateWomanSection() {
+        const rect = section.getBoundingClientRect();
+        const travel = Math.max(1, section.offsetHeight - window.innerHeight);
+        const progress = Math.max(0, Math.min(1, -rect.top / travel));
+        const fadeDistance = 0.18;
+        const fadeIn = Math.max(0, Math.min(1, progress / fadeDistance));
+        const fadeOut = Math.max(0, Math.min(1, (1 - progress) / fadeDistance));
+        const opacity = Math.min(fadeIn, fadeOut);
+        const offset = (1 - fadeIn) * 80 - (1 - fadeOut) * 60;
+
+        [label, hashtag].forEach((element) => {
+          if (!element) return;
+          element.style.opacity = opacity;
+          element.style.visibility = opacity > 0.01 ? 'visible' : 'hidden';
+          element.style.transform = `translateY(${offset}px)`;
+        });
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          section.classList.toggle('is-visible', entry.isIntersecting);
+          if (entry.isIntersecting) {
+            startColorCycle();
+          } else {
+            stopColorCycle();
+          }
+        });
+      }, { threshold: 0.05 });
+
+      observer.observe(section);
+      window.addEventListener('scroll', updateWomanSection, { passive: true });
+      window.addEventListener('resize', updateWomanSection);
+      updateWomanSection();
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const section = document.querySelector('.ig-section');
+      if (!section) return;
+
+      const overlays  = section.querySelectorAll('.ig-overlay');
+      const textA     = section.querySelector('.ig-text-a');
+      const textB     = section.querySelector('.ig-text-b');
+      const hashtags  = section.querySelector('.ig-hashtags');
+      const focusCell = section.querySelector('.ig-cell-focus');
+
+      function update() {
+        const rect    = section.getBoundingClientRect();
+        const trackH  = section.offsetHeight - window.innerHeight;
+        const progress = Math.max(0, Math.min(1, -rect.top / trackH));
+        const phaseAProgress = Math.max(0, Math.min(1, progress / 0.18));
+        const focusProgress = Math.max(0, Math.min(1, (progress - 0.52) / 0.22));
+        const focusEased = 1 - Math.pow(1 - focusProgress, 3);
+
+        if (focusCell) {
+          focusCell.style.transform = `scale(${1 + focusEased * 1.1})`;
+        }
+
+        if (progress > 0.5) {
+          const p2 = (progress - 0.5) / 0.5;
+          overlays.forEach(o  => { o.style.opacity = 1; });
+          hashtags.style.opacity  = p2;
+          textA.style.opacity     = 1 - p2 * 2;   /* fade out faster */
+          textB.style.opacity     = p2;
+        } else {
+          overlays.forEach(o  => { o.style.opacity = phaseAProgress; });
+          hashtags.style.opacity  = 0;
+          textA.style.opacity     = phaseAProgress;
+          textB.style.opacity     = 0;
+        }
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+  </script>
+
+</body>
+</html>

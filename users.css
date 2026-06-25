@@ -1,0 +1,284 @@
+/* ========================= */
+/* USERS PAGE                */
+/* ========================= */
+
+body.users-body {
+  background: #000;
+  overflow: hidden;
+  margin: 0;
+}
+
+/* ========================= */
+/* MAIN LAYOUT               */
+/* ========================= */
+
+.users-main {
+  position: fixed;
+  left: 51px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: minmax(360px, 25vw) repeat(3, minmax(320px, 1fr));
+  padding-right: 68px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Text panel mirrors the large editorial column in the Figma layout */
+.text-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 42px 42px 32px 50px;
+  border-right: 0.5px solid #33333300;
+  overflow: hidden;
+}
+
+/* Each body-part group is split into two internal columns:
+   a narrow metadata column and a wider username column. */
+.col-body {
+  --user-meta-col: 150px;
+  display: grid;
+  grid-template-columns: var(--user-meta-col) minmax(0, 1fr);
+  grid-template-rows: 124px minmax(0, 1fr);
+  border-left: 0;
+  overflow: hidden;
+}
+
+/* ========================= */
+/* TEXT PANEL                */
+/* ========================= */
+
+.users-title {
+  font-size: clamp(30px, 2.1vw, 42px);
+  font-weight: 500;
+  line-height: 1.08;
+  max-width: 310px;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 0 48px 0;
+}
+
+.users-intro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 20px;
+  max-width: 330px;
+}
+
+.users-intro p {
+
+    margin: 0 0 22px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.users-nav-links {
+  margin-top: auto;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.users-nav-link {
+  font-size: 16px;
+  font-weight: 500;
+  color: #969696;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.users-nav-link:hover {
+  color: #fff;
+}
+
+/* ========================= */
+/* COLUMN HEADER             */
+/* ========================= */
+
+.col-header {
+  grid-column: 2;
+  grid-row: 1;
+  height: 25px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin-top: 82px;
+}
+
+.col-label {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.label-glutes { color: #ff2529; }
+.label-legs   { color: #ff009d; }
+.label-feet   { color: #ccff00; }
+
+/* ========================= */
+/* COLUMN SECTIONS           */
+/* ========================= */
+
+.col-sections {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  padding-top: 26px;
+  padding-bottom: 76px;
+  overflow: hidden;
+}
+
+/* GLUTES: single section fills all available height */
+.glutes-section {
+  flex: 1 1 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+}
+
+/* ========================= */
+/* USER SECTION              */
+/* ========================= */
+
+.user-section {
+  display: grid;
+  grid-template-columns: var(--user-meta-col) minmax(0, 1fr);
+  flex-shrink: 0;
+  min-height: 0;
+  position: relative;
+  border-top: 0;
+}
+
+.col-legs .user-section:nth-child(2) {
+  min-height: 0;
+}
+
+.col-legs .user-section:nth-child(1) { height: 15vh !important; }
+.col-legs .user-section:nth-child(2) { height: 22vh !important; }
+.col-legs .user-section:nth-child(3) { height: 16vh !important; }
+.col-legs .user-section:nth-child(4) { height: 12vh !important; }
+
+.col-feet .user-section:nth-child(1) { height: 13vh !important; }
+.col-feet .user-section:nth-child(2) { height: 15.5vh !important; }
+.col-feet .user-section:nth-child(3) { height: 15.5vh !important; }
+.col-feet .user-section:nth-child(4) { height: 9.5vh !important; }
+.col-feet .user-section:nth-child(5) { height: 9.5vh !important; }
+
+.col-legs .user-section:nth-child(2) .section-scroll {
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Annotation: count + label, right-aligned */
+.section-annotation {
+  grid-column: 1;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 0 18px 0 0;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.ann-count {
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1;
+  transform: translateY(-0.1em);
+}
+
+.ann-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.2;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ========================= */
+/* SCROLLABLE AREA           */
+/* ========================= */
+
+/* Wrapper: clips content and hosts the gradient overlays */
+.scroll-wrapper {
+  grid-column: 2;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+
+/* Top fade */
+.scroll-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, #000 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Bottom fade */
+.scroll-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(to top, #000 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.section-scroll {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.section-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Images fill column width — equal column width = equal text scale */
+.section-scroll img,
+.section-scroll svg {
+  width: min(100%, 319px);
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 1280px) {
+  .users-main {
+    grid-template-columns: minmax(300px, 26vw) repeat(3, minmax(260px, 1fr));
+  }
+
+  .col-body {
+    --user-meta-col: 118px;
+  }
+
+  .ann-label {
+    font-size: 14px;
+  }
+}

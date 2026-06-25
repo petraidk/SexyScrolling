@@ -1,0 +1,565 @@
+@import url("fonts.css");
+
+/* ========================= */
+/* RESET */
+/* ========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  --atlas-accent: #ccff00;
+  --atlas-accent-contrast: #000;
+  font-family: "ABC Diatype Variable Unlicensed Trial", Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  background: #000;
+  color: #000;
+  display: flex;
+}
+
+
+/* ========================= */
+/* LEFT SIDEBAR NAV */
+/* ========================= */
+
+.sidenav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 51px;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  z-index: 100;
+}
+
+.sidenav-link {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-decoration: none;
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.0em;
+  text-transform: uppercase;
+}
+
+.sidenav-link.active { text-decoration: underline; }
+
+
+/* ========================= */
+/* MAIN WRAPPER */
+/* ========================= */
+
+.main-wrapper {
+  margin-left: 51px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 51px);
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+/* ========================= */
+/* TOP BODY PART TABS */
+/* ========================= */
+
+.body-tabs {
+  display: flex;
+  border-bottom: 1px solid #000;
+  background: #fff;
+  flex-shrink: 0;
+  min-height: 48px;
+}
+
+.tab {
+  flex: 1;
+  padding: 11px 18px 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.0em;
+  text-transform: uppercase;
+  background: #fff;
+  border: none;
+  border-right: 1px solid #000;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.tab:last-child { border-right: none; }
+
+
+.tab:hover[data-part="glutes"] {
+  background: #ff0000;
+}
+
+.tab:hover[data-part="legs"] {
+  background: #ff009d;
+}
+
+.tab:hover[data-part="feet"] {
+  background: #ccff00;
+}
+
+
+.tab.active {
+  background: var(--atlas-accent);
+  color: #000;
+}
+
+.tab.active[data-part="glutes"] {
+  background: #ff0000;
+}
+
+.tab.active[data-part="legs"] {
+  background: #ff009d;
+}
+
+.tab.active[data-part="feet"] {
+  background: #ccff00;
+}
+
+.tab sup {
+  font-size: 10px;
+  vertical-align: super;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+
+/* ========================= */
+/* CONTENT ROW */
+/* ========================= */
+
+.content-row {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  background: #000;
+}
+
+
+/* ========================= */
+/* IMAGE AREA — NO SCROLL */
+/* ========================= */
+
+.image-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+  padding: 14px;
+  background: var(--atlas-accent);
+}
+
+.atlas-section-links {
+  margin-top: auto;
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.atlas-section-link {
+  color: rgba(0, 0, 0, 0.62);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: left;
+  transition: color 0.16s ease, opacity 0.16s ease;
+}
+
+.atlas-section-link:hover {
+  color: #000;
+}
+
+/* Flat grid: images sized by JS to fill area exactly */
+.flat-grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  justify-content: start;
+}
+
+.flat-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.atlas-tile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  /* Keep grid cells transparent so PNG cutouts do not show pale boxes underneath. */
+  background: transparent;
+  cursor: pointer;
+}
+
+.atlas-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.22s ease, filter 0.22s ease;
+  transform-origin: center center;
+}
+
+.atlas-tile:hover img {
+  transform: scale(1.08);
+}
+
+.atlas-tile:hover {
+  transform: scale(1.2)
+}
+
+.atlas-tile.is-active {
+  z-index: 3;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55);
+}
+
+.atlas-tile.is-active img {
+  transform: scale(1.03);
+}
+
+/* Subcategory layout: groups in columns, no scroll */
+.subcat-columns {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.subcat-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.subcat-group {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0);
+  border: 0px solid rgba(0, 0, 0, 0.45);
+}
+
+.subcat-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.0em;
+  text-transform: uppercase;
+  padding: 8px 10px 7px;
+  line-height: 1.05;
+  flex-shrink: 0;
+  border-bottom: 0px solid rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.subcat-title sup {
+  font-size:9px;
+  font-weight: 700;
+  vertical-align: super;
+  margin-left: 2px;
+}
+
+.subcat-grid {
+  display: grid;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+.subcat-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* ========================= */
+/* RIGHT EXPLORE SIDEBAR */
+/* ========================= */
+
+.explore-sidebar {
+  width: 248px;
+  flex-shrink: 0;
+  border-left: 0px solid #000;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+body.atlas-glutes .explore-sidebar  {
+  background: #ff0000;
+}
+
+body.atlas-legs .explore-sidebar  {
+  background: #ff009d;
+}
+
+body.atlas-feet .explore-sidebar  {
+  background: #ccff00;
+}
+
+
+.explore-header {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.0em;
+  text-transform: uppercase;
+  padding: 16px 18px 12px;
+  border: 0px solid #000;
+  flex-shrink: 0;
+  color: #000;
+}
+
+
+.explore-item {
+  border: 0.5px solid #000;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.explore-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  padding: 14px 18px 13px;
+  transition: background 0.05s, color 0.05s;
+  color: #000;
+}
+
+.explore-item:hover .explore-label { background: #f5f5f5; }
+
+.explore-item.active .explore-label {
+  background: var(--atlas-accent);
+  color: #000;
+}
+
+body.atlas-glutes .explore-item.active  .explore-label{
+  background: #ff0000;
+}
+
+body.atlas-legs .explore-item.active .explore-label {
+  background: #ff009d;
+}
+
+body.atlas-feet .explore-item.active .explore-label {
+  background: #ccff00;
+}
+
+body.atlas-glutes .explore-item.active {
+  background: #ff0000;
+}
+
+body.atlas-legs .explore-item.active {
+  background: #ff009d;
+}
+
+body.atlas-feet .explore-item.active {
+  background: #ccff00;
+}
+
+.explore-desc {
+  display: none;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.32;
+  padding: 0 18px 16px 18px;
+  color: #000;
+}
+
+.atlas-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.atlas-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.atlas-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.78);
+  cursor: pointer;
+}
+
+.atlas-lightbox-card {
+  position: relative;
+  width: min(40vw, 620px);
+  max-width: calc(100vw - 260px);
+  max-height: calc(100vh - 140px);
+  color: #000;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.52);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.atlas-lightbox-media {
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  background: var(--atlas-accent);
+}
+
+body.atlas-glutes .atlas-lightbox-media {
+  background: #ff0000;
+}
+
+body.atlas-legs .atlas-lightbox-media {
+  background: #ff009d;
+}
+
+body.atlas-feet .atlas-lightbox-media {
+  background: #ccff00;
+}
+
+.atlas-lightbox-media img {
+  width: 100%;
+  max-height: calc(100vh - 140px);
+  object-fit: contain;
+  display: block;
+}
+
+.atlas-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 52px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 0.16s ease, transform 0.16s ease, opacity 0.16s ease;
+}
+
+.atlas-lightbox-prev {
+  left: calc(50% - min(20vw, 310px) - 52px);
+}
+
+.atlas-lightbox-next {
+  right: calc(50% - min(20vw, 310px) - 52px);
+}
+
+.atlas-lightbox-nav:hover {
+  color: var(--atlas-accent);
+  transform: translateY(-50%) scale(1.08);
+}
+
+body.atlas-glutes .atlas-lightbox-nav:hover {
+  color: #ff0000;
+}
+
+body.atlas-legs .atlas-lightbox-nav:hover {
+  color: #ff009d;
+}
+
+body.atlas-feet .atlas-lightbox-nav:hover {
+  color: #ccff00;
+}
+
+.atlas-lightbox-nav:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.atlas-lightbox-meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.08));
+  color: #fff;
+}
+
+.atlas-lightbox-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.atlas-lightbox-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  max-width: 92%;
+}
+
+.atlas-lightbox-tag {
+  padding: 1px 1px 1px;
+  border: 0px solid ;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 0.8;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0);
+  color: #fff;
+}
+
+.atlas-lightbox-empty {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.;
+}
+
+.explore-item.active .explore-desc { display: block; }
