@@ -19,7 +19,7 @@ html, body {
 body {
   --atlas-accent: #ccff00;
   --atlas-accent-contrast: #000;
-  font-family: "ABC Diatype Variable Unlicensed Trial", Arial, Helvetica, sans-serif;
+  font-family: "ABC Diatype", Arial, Helvetica, sans-serif;
   font-weight: 700;
   background: #000;
   color: #000;
