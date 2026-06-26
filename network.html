@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Network of Hashtags — Thesis Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+
+  <link rel="stylesheet" href="style.css?v=16">
+
+  <script src="https://unpkg.com/graphology@0.25.1/dist/graphology.umd.min.js"></script>
+  <script src="https://unpkg.com/sigma@2.4.0/build/sigma.min.js"></script>
+  <script src="network-nodes.js?v=2"></script>
+  <script src="network-edges.js?v=2"></script>
+</head>
+<body class="network-page">
+
+  <nav class="sidenav">
+    <a href="index.html#intro" class="sidenav-link">INTRO</a>
+    <a href="network.html" class="sidenav-link active">NETWORK</a>
+    <a href="image-selection.html" class="sidenav-link">IMAGE SELECTION</a>
+    <a href="image-atlas-intro.html" class="sidenav-link">IMAGE ATLAS</a>
+    <a href="hashtags.html" class="sidenav-link">HASHTAGS</a>
+    <a href="users.html" class="sidenav-link">USERS</a>
+    <a href="about.html" class="sidenav-link">ABOUT</a>
+  </nav>
+
+  <section id="network" class="section network-section">
+    <div class="network-left" id="network-left">
+      <div class="network-left-title">Network of Hashtags</div>
+
+      <div id="left-default">
+        <div class="network-default-text">
+          This network visualizes the relationships between  <strong>763 hashtags</strong>  collected from Instagram posts
+          featuring the female body.
+          <br><br>
+          The dataset was collected starting from #woman and following the flow of posts suggested by the platform, selecting only those where the female body was the main subject.
+          <br><br>
+          Each node is a hashtag. Edges connect hashtags that appear
+          together in the same post.<br><br>
+          The hashtags extracted from these posts were then analysed and grouped into <strong><em>categories↘</em></strong>, revealing the different narratives and topics associated with the female body within the platform.
+          <br><br>
+          Select a  <em>category↘</em> on the right to explore its hashtags.<br><br>
+          Where would you expect to find more explicit images, and which hashtags are they associated with?
+        </div>
+        <div class="network-nav-links">
+          <a href="image-selection.html" class="network-nav-link">→ discover the image selection</a>
+        </div>
+      </div>
+
+      <div id="left-category" style="display:none;">
+        <div class="network-left-category" id="left-cat-name"></div>
+        <div class="network-tags-list" id="left-tags"></div>
+        <div class="left-posts-scroll" id="left-posts"></div>
+      </div>
+    </div>
+
+    <div id="graph-container">
+      <div class="network-zoom-tools" aria-label="Graph zoom controls">
+        <button type="button" class="network-zoom-button" id="networkZoomIn" aria-label="Zoom in">+</button>
+        <button type="button" class="network-zoom-button" id="networkZoomOut" aria-label="Zoom out">−</button>
+        <button type="button" class="network-zoom-button network-zoom-reset" id="networkZoomReset">reset</button>
+      </div>
+      <div id="node-size-legend">
+        <div class="nsl-title">Node size = occurrences</div>
+        <div id="nsl-items"></div>
+      </div>
+    </div>
+
+    <div class="network-right">
+      <div class="network-right-header">explore the <em>categories</em>↘</div>
+      <div id="cat-buttons"></div>
+    </div>
+  </section>
+
+  <script src="network-posts.js?v=7"></script>
+  <script src="network.js?v=18"></script>
+</body>
+</html>
