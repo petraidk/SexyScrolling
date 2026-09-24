@@ -663,7 +663,7 @@ body.network-page {
   color: #fff;
   display: flex;
   flex-direction: column;
-  padding: 40px 24px;
+  padding: 28px 24px;
   overflow: hidden;
   border-right: 1px solid #000000;
 }
@@ -962,61 +962,31 @@ body.network-page {
   line-height: 1;
   white-space: nowrap;
   text-shadow: 0 0 7px rgba(0,0,0,0.95), 0 0 18px rgba(0,0,0,0.85);
-  cursor: pointer;
-  pointer-events: auto;
-  will-change: transform, left, top;
-}
-
-.network-canvas-label:hover {
-  background: color-mix(in srgb, var(--label-color, #FF55C9) 50%, transparent);
-  text-shadow: none;
+  left: 0;
+  top: 0;
+  pointer-events: none;
 }
 
 .network-canvas-label.is-neighbor-label {
-  opacity: 0.74;
+  opacity: 0.9;
 }
 
 .network-canvas-label.is-node-hovered {
   opacity: 1;
 }
 
-.network-node-tooltip {
-  position: absolute;
-  z-index: 20;
-  padding: 7px 9px 8px;
-  border: 1px solid rgba(255,255,255,0.42);
-  background: color-mix(in srgb, var(--tooltip-color, #FF55C9) 50%, transparent);
-  color: #fff;
-  line-height: 1;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, 12px);
-  transition: opacity 0.14s ease, transform 0.14s ease;
+.network-label-name { display: block; }
+.network-label-occurrences { display: none; }
+.network-canvas-label.is-node-hovered .network-label-name {
+  color: var(--label-color, #fff);
 }
-
-.network-node-tooltip.visible {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.network-node-tooltip strong,
-.network-node-tooltip span {
+.network-canvas-label.is-node-hovered .network-label-occurrences {
   display: block;
-  font-style: normal;
-  line-height: 1.1;
-}
-
-.network-node-tooltip strong {
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.network-node-tooltip span {
   margin-top: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  opacity: 0.86;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 12px;
+  color: #bdbdbd;
 }
 
 /* ========================= */
@@ -1232,3 +1202,27 @@ body.network-page {
 ::-webkit-scrollbar-thumb {
   background: #333;
 }
+
+/* A light overlay animates focused connections without moving hit targets. */
+.network-connections { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 9; pointer-events: none; }
+.network-connection-tools { position: absolute; left: 20px; top: 18px; right: 155px; z-index: 18; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; pointer-events: none; }
+.network-connection-tools button {
+  pointer-events: auto;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #555;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  min-height: 24px;
+  cursor: pointer;
+}
+.network-connection-tools button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.network-connection-tools button:focus-visible { outline: 1px solid #555; outline-offset: 4px; }
+.network-connection-tools span { color: #888; font-size: 10px; line-height: 1.4; }
+.network-canvas-label { animation: network-label-in 180ms ease-out; }
+@keyframes network-label-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .network-canvas-label { animation: none; } }

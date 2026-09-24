@@ -25,11 +25,11 @@ body.users-body {
   overflow: hidden;
 }
 
-/* Text panel mirrors the large editorial column in the Figma layout */
+/* Align the introduction with the Hashtags section. */
 .text-panel {
   display: flex;
   flex-direction: column;
-  padding: 42px 42px 32px 50px;
+  padding: 28px 20px 24px 36px;
   border-right: 0.5px solid #33333300;
   overflow: hidden;
 }
@@ -50,13 +50,13 @@ body.users-body {
 /* ========================= */
 
 .users-title {
-  font-size: clamp(30px, 2.1vw, 42px);
+  font-size: 30px;
   font-weight: 500;
   line-height: 1.08;
-  max-width: 310px;
+  max-width: 260px;
   color: #fff;
   text-transform: uppercase;
-  margin: 0 0 48px 0;
+  margin: 0 0 78px 0;
 }
 
 .users-intro {
@@ -65,7 +65,7 @@ body.users-body {
   flex-direction: column;
   justify-content: flex-start;
   gap: 20px;
-  max-width: 330px;
+  max-width: 295px;
 }
 
 .users-intro p {

@@ -126,9 +126,22 @@ let hoveredNeighbors = new Set();
 const MIN_VISIBLE_OCCURRENCES = 20;
 let labelLayer = null;
 let labelAnimationFrame = null;
-let hoverClearTimeout = null;
+let hoverIntentTimeout = null;
+let cameraIdleTimeout = null;
+let cameraMoving = false;
+let pointerDown = false;
+let pinnedNode = null;
+let showAllConnections = false;
+let connectionCanvas = null;
+let connectionFrame = null;
+let connectionStart = 0;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const FOCUS_CONNECTION_LIMIT = 12;
+const labelElements = new Map();
+const labelMeasureContext = document.createElement('canvas').getContext('2d');
 
 function drawDarkNodeHover(context, data) {
+  if (cameraMoving || pointerDown) return;
   const size = data.size || 1;
   context.save();
   context.beginPath();
@@ -139,151 +152,166 @@ function drawDarkNodeHover(context, data) {
   context.restore();
 }
 
-function drawOccurrenceScaledLabel(context, data, settings) {
-  const label = data.label || data.origLabel;
-  if (!label) return;
-
-  const font = settings.labelFont || 'Arial, sans-serif';
-  const fontWeight = settings.labelWeight || '700';
-  const fontSize = data.labelSize || settings.labelSize || 12;
-  const color = data.baseColor || data.color || '#FF55C9';
-
-  context.save();
-  context.font = `${fontWeight} ${fontSize}px ${font}`;
-  const textWidth = context.measureText(label).width;
-  const boxX = data.x + (data.size || 1) + 5;
-  const boxY = data.y - fontSize / 2 - 4;
-  const boxW = textWidth + 10;
-  const boxH = fontSize + 8;
-
-  context.globalAlpha = 0.5;
-  context.fillStyle = color;
-  context.fillRect(boxX, boxY, boxW, boxH);
-
-  context.globalAlpha = 1;
-  context.fillStyle = '#ffffff';
-  context.textBaseline = 'middle';
-  context.fillText(label, boxX + 5, data.y);
-  context.restore();
+function scheduleNetworkLabelsUpdate() {
+  if (labelAnimationFrame !== null) return;
+  labelAnimationFrame = requestAnimationFrame(() => {
+    labelAnimationFrame = null;
+    updateNetworkLabels();
+  });
 }
 
-function scheduleNetworkLabelsUpdate() {
-  if (labelAnimationFrame) cancelAnimationFrame(labelAnimationFrame);
-  labelAnimationFrame = requestAnimationFrame(updateNetworkLabels);
+function labelPositions(point, offset, width, height) {
+  return [
+    { x: point.x + offset, y: point.y - height / 2 },
+    { x: point.x - offset - width, y: point.y - height / 2 },
+    { x: point.x - width / 2, y: point.y - offset - height },
+    { x: point.x - width / 2, y: point.y + offset },
+    { x: point.x + offset, y: point.y - offset - height },
+    { x: point.x - offset - width, y: point.y - offset - height },
+    { x: point.x + offset, y: point.y + offset },
+    { x: point.x - offset - width, y: point.y + offset }
+  ];
 }
 
 function updateNetworkLabels() {
   if (!sigmaInst || !theGraph || !labelLayer) return;
-  if (typeof sigmaInst.graphToViewport !== 'function') return;
-
-  labelLayer.innerHTML = '';
-  const nodesToLabel = [];
-
+  // Keep the same labels during navigation: only move existing DOM elements.
+  // Reconsider density and collisions once the camera settles.
+  if (cameraMoving || pointerDown) {
+    for (const [node, label] of labelElements) {
+      const attrs = theGraph.getNodeAttributes(node);
+      if (attrs.hidden) { label.style.visibility = 'hidden'; continue; }
+      label.style.visibility = '';
+      const point = sigmaInst.graphToViewport(attrs);
+      const offset = sigmaInst.scaleSize(sigmaInst.getNodeDisplayData(node)?.size || attrs.size) + 7;
+      const position = labelPositions(point, offset, Number(label.dataset.width), Number(label.dataset.height))[Number(label.dataset.side)];
+      label.style.transform = `translate(${position.x}px, ${position.y}px)`;
+    }
+    return;
+  }
+  const container = document.getElementById('graph-container');
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  const ratio = sigmaInst.getCamera().getState().ratio;
+  // Reveal more names as the user zooms in, with a strict screen-space budget.
+  const budget = Math.min(42, Math.max(8, Math.round((selectedCat ? 16 : 12) / Math.sqrt(ratio))));
+  const candidates = [];
   theGraph.forEachNode((node, attrs) => {
-    if (attrs.hidden) return;
-    const isHovered = node === hoveredNode;
-    const isNeighbor = hoveredNeighbors.has(node);
-    const shouldLabel = attrs.forceLabel || isHovered || isNeighbor;
-    if (!shouldLabel) return;
-    nodesToLabel.push({ node, attrs, isHovered, isNeighbor });
+    if (attrs.hidden || (hoveredNode && node !== hoveredNode && !hoveredNeighbors.has(node))) return;
+    candidates.push({ node, attrs });
   });
-
-  nodesToLabel
-    .sort((a, b) => a.attrs.occ - b.attrs.occ)
-    .forEach(({ node, attrs, isHovered, isNeighbor }) => {
-      const viewport = sigmaInst.graphToViewport({
-        x: theGraph.getNodeAttribute(node, 'x'),
-        y: theGraph.getNodeAttribute(node, 'y')
-      });
-
-      const label = document.createElement('div');
-      label.className = 'network-canvas-label';
-      if (isHovered) label.classList.add('is-node-hovered');
-      if (isNeighbor) label.classList.add('is-neighbor-label');
-      label.dataset.node = node;
-      label.textContent = attrs.origLabel || attrs.label;
-      label.style.left = `${viewport.x}px`;
-      label.style.top = `${viewport.y}px`;
-      label.style.fontSize = `${attrs.labelSize}px`;
-      label.style.setProperty('--label-color', attrs.baseColor || attrs.color || '#FF55C9');
-      label.style.transform = `translate(${Math.max(attrs.size + 7, 10)}px, -50%)`;
-      label.addEventListener('mouseenter', () => setHoveredNode(node));
-      label.addEventListener('mouseleave', clearHoveredNode);
-      label.addEventListener('click', () => {
-        const cat = theGraph.getNodeAttribute(node, 'category');
-        if (cat) setSelectedCategory(cat);
-      });
-      labelLayer.appendChild(label);
+  candidates.sort((a, b) => Number(b.node === hoveredNode) - Number(a.node === hoveredNode) || b.attrs.occ - a.attrs.occ);
+  const boxes = [
+    { x: 0, y: 0, w: width, h: 85 },
+    { x: 0, y: height - 175, w: 170, h: 175 }
+  ];
+  const visible = new Set();
+  for (const { node, attrs } of candidates) {
+    if (visible.size >= (hoveredNode ? Math.min(8, budget) : budget)) break;
+    const point = sigmaInst.graphToViewport(attrs);
+    if (point.x < 0 || point.y < 0 || point.x > width || point.y > height) continue;
+    const isFocused = node === hoveredNode;
+    const size = hoveredNode && !isFocused ? 12 : Math.min(17, attrs.labelSize);
+    const text = attrs.origLabel || attrs.label;
+    labelMeasureContext.font = `700 ${size}px "ABC Diatype", Arial, sans-serif`;
+    let w = labelMeasureContext.measureText(text).width + 12;
+    const detail = `${attrs.occ} occurrences`;
+    if (isFocused) {
+      labelMeasureContext.font = '500 10px "ABC Diatype", Arial, sans-serif';
+      w = Math.max(w, labelMeasureContext.measureText(detail).width + 12);
+    }
+    const h = size + 7 + (isFocused ? 16 : 0);
+    const displaySize = sigmaInst.getNodeDisplayData(node)?.size || attrs.size;
+    const offset = sigmaInst.scaleSize(displaySize) + 7;
+    const existing = labelElements.get(node);
+    const preferred = Number(existing?.dataset.side || 0);
+    const positions = labelPositions(point, offset, w, h);
+    const sides = [preferred, ...positions.map((_, index) => index).filter(side => side !== preferred)];
+    const side = sides.find(index => {
+      const { x, y } = positions[index];
+      return x >= 8 && y >= 8 && x + w <= width - 8 && y + h <= height - 8 &&
+        !boxes.some(b => x < b.x + b.w + 8 && x + w + 8 > b.x && y < b.y + b.h + 6 && y + h + 6 > b.y);
     });
+    if (side === undefined) continue;
+    const { x, y } = positions[side];
+    boxes.push({ x, y, w, h });
+    visible.add(node);
+    let label = labelElements.get(node);
+    if (!label) {
+      label = document.createElement('div');
+      label.dataset.node = node;
+      const name = document.createElement('span');
+      name.className = 'network-label-name';
+      name.textContent = text;
+      const occurrences = document.createElement('span');
+      occurrences.className = 'network-label-occurrences';
+      occurrences.textContent = detail;
+      label.append(name, occurrences);
+      labelLayer.appendChild(label);
+      labelElements.set(node, label);
+    }
+    label.className = 'network-canvas-label' + (node === hoveredNode ? ' is-node-hovered' : hoveredNode ? ' is-neighbor-label' : '');
+    label.style.setProperty('--label-color', attrs.baseColor || attrs.color);
+    label.dataset.side = side;
+    label.dataset.width = w;
+    label.dataset.height = h;
+    label.style.visibility = '';
+    label.style.fontSize = `${size}px`;
+    label.style.transform = `translate(${x}px, ${y}px)`;
+  }
+  for (const [node, label] of labelElements) {
+    if (!visible.has(node)) {
+      label.remove();
+      labelElements.delete(node);
+    }
+  }
 }
 
 function setHoveredNode(node) {
-  if (!theGraph || !sigmaInst) return;
-  if (hoverClearTimeout) clearTimeout(hoverClearTimeout);
-  if (hoveredNode === node) {
-    positionHoverTooltip(node);
-    return;
-  }
+  if (!theGraph || !sigmaInst || cameraMoving || pointerDown) return;
+  if (hoveredNode === node) return;
   hoveredNode = node;
-  hoveredNeighbors = new Set(theGraph.neighbors(node));
-  const label = theGraph.getNodeAttribute(node, 'origLabel') || theGraph.getNodeAttribute(node, 'label');
-  const occ = theGraph.getNodeAttribute(node, 'occ');
-  const color = theGraph.getNodeAttribute(node, 'baseColor') || theGraph.getNodeAttribute(node, 'color') || '#FF55C9';
-  const hoverTooltip = document.querySelector('.network-node-tooltip');
-  if (hoverTooltip) {
-    hoverTooltip.innerHTML = `<strong>${label}</strong><span>${occ} occurrences</span>`;
-    hoverTooltip.style.setProperty('--tooltip-color', color);
-    hoverTooltip.classList.add('visible');
-    hoverTooltip.setAttribute('aria-hidden', 'false');
-    positionHoverTooltip(node);
-  }
+  const neighbors = theGraph.neighbors(node).filter(key => !theGraph.getNodeAttribute(key, 'hidden'));
+  const origin = theGraph.getNodeAttributes(node);
+  neighbors.sort((a, b) => {
+    const aa = theGraph.getNodeAttributes(a), bb = theGraph.getNodeAttributes(b);
+    return Math.hypot(aa.x - origin.x, aa.y - origin.y) - Math.hypot(bb.x - origin.x, bb.y - origin.y);
+  });
+  hoveredNeighbors = new Set(showAllConnections ? neighbors : neighbors.slice(0, FOCUS_CONNECTION_LIMIT));
+  startConnectionAnimation();
+  updateConnectionStatus(neighbors.length);
   sigmaInst.refresh();
   scheduleNetworkLabelsUpdate();
 }
 
-function positionHoverTooltip(node = hoveredNode) {
-  const hoverTooltip = document.querySelector('.network-node-tooltip');
-  const container = document.getElementById('graph-container');
-  if (!node || !hoverTooltip || !container || !theGraph || !sigmaInst) return;
-  if (typeof sigmaInst.graphToViewport !== 'function') return;
-
-  const viewport = sigmaInst.graphToViewport({
-    x: theGraph.getNodeAttribute(node, 'x'),
-    y: theGraph.getNodeAttribute(node, 'y')
-  });
-  const nodeSize = Number(theGraph.getNodeAttribute(node, 'size') || 0);
-  const offset = Math.max(nodeSize + 18, 24);
-
-  requestAnimationFrame(() => {
-    const tooltipWidth = hoverTooltip.offsetWidth || 120;
-    const tooltipHeight = hoverTooltip.offsetHeight || 36;
-    const minX = tooltipWidth / 2 + 10;
-    const maxX = container.clientWidth - tooltipWidth / 2 - 10;
-    const x = Math.max(minX, Math.min(maxX, viewport.x));
-    let y = viewport.y + offset;
-
-    if (y + tooltipHeight > container.clientHeight - 10) {
-      y = viewport.y - offset - tooltipHeight;
-    }
-
-    hoverTooltip.style.left = `${x}px`;
-    hoverTooltip.style.top = `${Math.max(10, y)}px`;
-  });
+function clearHoveredNode(force = false) {
+  clearTimeout(hoverIntentTimeout);
+  if (pinnedNode && !force) return;
+  pinnedNode = null;
+  const hadHover = hoveredNode !== null;
+  hoveredNode = null;
+  hoveredNeighbors.clear();
+  stopConnectionAnimation();
+  updateConnectionStatus();
+  document.getElementById('graph-container').style.cursor = '';
+  if (hadHover && sigmaInst) sigmaInst.refresh();
+  scheduleNetworkLabelsUpdate();
 }
 
-function clearHoveredNode() {
-  if (hoverClearTimeout) clearTimeout(hoverClearTimeout);
-  hoverClearTimeout = setTimeout(() => {
-  hoveredNode = null;
-  hoveredNeighbors = new Set();
-  const hoverTooltip = document.querySelector('.network-node-tooltip');
-  if (hoverTooltip) {
-    hoverTooltip.classList.remove('visible');
-    hoverTooltip.setAttribute('aria-hidden', 'true');
-  }
-  if (sigmaInst) sigmaInst.refresh();
+function suspendNetworkHover() {
+  cameraMoving = true;
+  clearHoveredNode();
   scheduleNetworkLabelsUpdate();
-  }, 80);
+  clearTimeout(cameraIdleTimeout);
+  cameraIdleTimeout = setTimeout(() => {
+    cameraMoving = false;
+    if (!pointerDown) {
+      scheduleNetworkLabelsUpdate();
+      if (hoveredNode) {
+        drawConnections(performance.now());
+      }
+    }
+  }, 160);
 }
 
 function occurrenceLabelSize(occ, minOcc, maxOcc) {
@@ -331,12 +359,30 @@ function buildGraph() {
     }
   });
 
+  // A sparse overview uses only existing, short links, not inferred edge weights.
+  const edges = [];
+  g.forEachEdge((edge, attrs, source, target) => {
+    const a = g.getNodeAttributes(source), b = g.getNodeAttributes(target);
+    edges.push({ edge, source, target, distance: Math.hypot(a.x - b.x, a.y - b.y) });
+  });
+  edges.sort((a, b) => a.distance - b.distance);
+  const degree = new Map();
+  let count = 0;
+  for (const { edge, source, target } of edges) {
+    const a = degree.get(source) || 0, b = degree.get(target) || 0;
+    if (count >= 220 || a >= 3 || b >= 3) continue;
+    g.setEdgeAttribute(edge, 'overview', true);
+    degree.set(source, a + 1);
+    degree.set(target, b + 1);
+    count++;
+  }
   return g;
 }
 
 /* ---- Apply category filter by modifying node attributes directly ---- */
 function applyFilter(cat) {
   if (!theGraph) return;
+  clearHoveredNode(true);
 
   theGraph.forEachNode((node, attrs) => {
     /* FIX: use origLabel (never overwritten) instead of attrs.label which
@@ -427,11 +473,6 @@ function startNetwork() {
 
   theGraph = buildGraph();
 
-  const hoverTooltip = document.createElement('div');
-  hoverTooltip.className = 'network-node-tooltip';
-  hoverTooltip.setAttribute('aria-hidden', 'true');
-  container.appendChild(hoverTooltip);
-
   labelLayer = document.createElement('div');
   labelLayer.className = 'network-label-layer';
   container.appendChild(labelLayer);
@@ -449,6 +490,7 @@ function startNetwork() {
     zIndex: true,
     hideEdgesOnMove: true,
     hideLabelsOnMove: false,
+    renderLabels: false,
     doubleClickZoomingDuration: 420,
     doubleClickZoomingRatio: 1.6,
     zoomDuration: 260,
@@ -470,7 +512,7 @@ function startNetwork() {
         return {
           ...data,
           zIndex: 1,
-          size: isHovered ? data.size * 1.12 : data.size,
+          size: data.size,
           label: data.forceLabel ? (data.origLabel || data.label) : '',
           forceLabel: data.forceLabel
         };
@@ -478,36 +520,17 @@ function startNetwork() {
 
       return {
         ...data,
-        color: '#00000000',
+        color: '#292929',
         label: '',
-        size: 0,
-        hidden: true,
         forceLabel: false
       };
     },
-    edgeReducer: (edge, data) => {
-      if (!hoveredNode) return data;
-
-      const source = theGraph.source(edge);
-      const target = theGraph.target(edge);
-      const isConnected = source === hoveredNode || target === hoveredNode;
-
-      if (isConnected) {
-        return {
-          ...data,
-          color: '#6f6f6fff',
-          size: Math.max((data.size || 0.3) * 2, 1),
-          zIndex: 1
-        };
-      }
-
-      return {
-        ...data,
-        color: '#0d0d0d',
-        size: 0,
-        hidden: true
-      };
-    },
+    edgeReducer: (edge, data) => ({
+      ...data,
+      hidden: data.hidden || !!hoveredNode || (!showAllConnections && !data.overview),
+      color: showAllConnections ? '#191919' : '#343434',
+      size: 0.45
+    }),
     minCameraRatio: 0.02,
     maxCameraRatio: 20
   });
@@ -515,22 +538,49 @@ function startNetwork() {
   sigmaInst.refresh();
   scheduleNetworkLabelsUpdate();
 
-  /* Initial legend render + update on every camera move */
   updateSizeLegend();
-  sigmaInst.getCamera().on('updated', () => {
-    updateSizeLegend();
+  sigmaInst.getCamera().on('updated', suspendNetworkHover);
+  sigmaInst.on('afterRender', () => {
     scheduleNetworkLabelsUpdate();
-    positionHoverTooltip();
+    if (hoveredNode) drawConnections(performance.now());
   });
+  container.addEventListener('wheel', suspendNetworkHover, { passive: true });
+  container.addEventListener('pointerdown', event => {
+    if (event.target.closest('.network-connection-tools, .network-zoom-tools')) return;
+    pointerDown = true;
+    suspendNetworkHover();
+  });
+  const endPointer = () => {
+    if (!pointerDown) return;
+    pointerDown = false;
+    suspendNetworkHover();
+  };
+  window.addEventListener('pointerup', endPointer);
+  window.addEventListener('pointercancel', endPointer);
+  window.addEventListener('blur', () => {
+    endPointer();
+    clearHoveredNode();
+  });
+  container.addEventListener('pointerleave', () => clearHoveredNode());
+  document.fonts.ready.then(scheduleNetworkLabelsUpdate);
 
   sigmaInst.on('clickNode', ({ node }) => {
-    const cat = theGraph.getNodeAttribute(node, 'category');
-    if (cat) setSelectedCategory(cat);
+    if (pinnedNode === node) { clearHoveredNode(true); return; }
+    clearHoveredNode(true);
+    cameraMoving = false;
+    pointerDown = false;
+    setHoveredNode(node);
+    pinnedNode = node;
+    updateConnectionStatus();
   });
 
   sigmaInst.on('enterNode', ({ node }) => {
-    setHoveredNode(node);
-    container.style.cursor = 'pointer';
+    clearTimeout(hoverIntentTimeout);
+    if (cameraMoving || pointerDown || pinnedNode) return;
+    hoverIntentTimeout = setTimeout(() => {
+      setHoveredNode(node);
+      if (hoveredNode === node) container.style.cursor = 'pointer';
+    }, 120);
   });
 
   sigmaInst.on('leaveNode', () => {
@@ -538,7 +588,116 @@ function startNetwork() {
     container.style.cursor = '';
   });
 
+  container.querySelectorAll('.network-connection-tools, .network-zoom-tools').forEach(control => {
+    ['mousedown', 'mouseup', 'click', 'dblclick'].forEach(type => {
+      control.addEventListener(type, event => event.stopPropagation());
+    });
+  });
+  sigmaInst.on('clickStage', ({ event }) => {
+    if (event.original?.target?.closest?.('.network-connection-tools, .network-zoom-tools')) return;
+    clearHoveredNode(true);
+  });
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape') clearHoveredNode(true);
+  });
+  connectionCanvas = document.createElement('canvas');
+  connectionCanvas.className = 'network-connections';
+  connectionCanvas.setAttribute('aria-hidden', 'true');
+  container.appendChild(connectionCanvas);
+  document.getElementById('networkConnections')?.addEventListener('click', event => {
+    showAllConnections = !showAllConnections;
+    event.currentTarget.setAttribute('aria-pressed', String(showAllConnections));
+    event.currentTarget.textContent = showAllConnections ? 'All links' : 'Essential links';
+    const current = hoveredNode;
+    if (current) { hoveredNode = null; setHoveredNode(current); }
+    sigmaInst.refresh();
+    updateConnectionStatus();
+  });
   initNetworkZoomControls();
+}
+
+function updateConnectionStatus(total) {
+  const el = document.getElementById('network-connection-status');
+  if (!el) return;
+  if (!hoveredNode) {
+    el.textContent = showAllConnections ? 'All connections · hover to explore' : 'Essential links · hover to explore · click to hold';
+    return;
+  }
+  const count = total ?? theGraph.neighbors(hoveredNode).filter(n => !theGraph.getNodeAttribute(n, 'hidden')).length;
+  el.textContent = `${hoveredNeighbors.size} of ${count} links${showAllConnections ? '' : ' · nearest first'}${pinnedNode ? ' · click background to release' : ' · click to hold'}`;
+}
+
+function stopConnectionAnimation() {
+  cancelAnimationFrame(connectionFrame);
+  connectionFrame = null;
+  if (connectionCanvas) connectionCanvas.getContext('2d').clearRect(0, 0, connectionCanvas.width, connectionCanvas.height);
+}
+
+function startConnectionAnimation() {
+  stopConnectionAnimation();
+  connectionStart = performance.now();
+  const tick = time => {
+    if (!hoveredNode || !connectionCanvas) return;
+    drawConnections(time);
+    // Animate only the small overlay; never reprocess the graph on each frame.
+    if (!reducedMotion.matches && !document.hidden) connectionFrame = requestAnimationFrame(tick);
+  };
+  connectionFrame = requestAnimationFrame(tick);
+}
+
+function drawConnections(time) {
+  if (!connectionCanvas || !hoveredNode) return;
+  const container = document.getElementById('graph-container');
+  const width = container.clientWidth, height = container.clientHeight;
+  const dpr = window.devicePixelRatio || 1;
+  if (connectionCanvas.width !== Math.round(width * dpr) || connectionCanvas.height !== Math.round(height * dpr)) {
+    connectionCanvas.width = Math.round(width * dpr);
+    connectionCanvas.height = Math.round(height * dpr);
+  }
+  const ctx = connectionCanvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+  if (cameraMoving || pointerDown) return;
+  const origin = theGraph.getNodeAttributes(hoveredNode);
+  const a = sigmaInst.graphToViewport(origin);
+  const progress = reducedMotion.matches ? 1 : Math.min(1, (time - connectionStart) / 380);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = origin.baseColor;
+  ctx.fillStyle = origin.baseColor;
+  for (const node of hoveredNeighbors) {
+    const b = sigmaInst.graphToViewport(theGraph.getNodeAttributes(node));
+    ctx.globalAlpha = 0.42 * progress;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(a.x + (b.x - a.x) * progress, a.y + (b.y - a.y) * progress);
+    ctx.stroke();
+    if (!reducedMotion.matches && !showAllConnections) {
+      const t = ((time - connectionStart) % 2400) / 2400;
+      ctx.globalAlpha = 0.85 * progress;
+      ctx.beginPath();
+      ctx.arc(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, 1.7, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 0.65;
+  ctx.beginPath();
+  ctx.arc(a.x, a.y, sigmaInst.scaleSize(origin.size) + 5, 0, Math.PI * 2);
+  ctx.stroke();
+}
+
+function frameCategory(cat) {
+  const points = [];
+  theGraph.forEachNode((node, attrs) => {
+    if (attrs.category === cat) points.push(sigmaInst.getNodeDisplayData(node));
+  });
+  if (!points.length) return;
+  const xs = points.map(p => p.x), ys = points.map(p => p.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const container = document.getElementById('graph-container');
+  const shortest = Math.min(container.clientWidth, container.clientHeight);
+  const ratio = Math.max(0.18, Math.min(1.4, Math.max((maxX - minX) * shortest / container.clientWidth, (maxY - minY) * shortest / container.clientHeight) * 1.35));
+  suspendNetworkHover();
+  sigmaInst.getCamera().animate({ x: (minX + maxX) / 2, y: (minY + maxY) / 2, ratio }, { duration: reducedMotion.matches ? 0 : 650 });
 }
 
 function zoomNetworkBy(multiplier) {
@@ -546,11 +705,13 @@ function zoomNetworkBy(multiplier) {
   const camera = sigmaInst.getCamera();
   const state = camera.getState();
   const nextRatio = Math.max(0.02, Math.min(20, state.ratio * multiplier));
+  suspendNetworkHover();
   camera.animate({ ratio: nextRatio }, { duration: 220 });
 }
 
 function resetNetworkZoom() {
   if (!sigmaInst) return;
+  suspendNetworkHover();
   sigmaInst.getCamera().animate({ x: 0.5, y: 0.5, ratio: 1 }, { duration: 320 });
 }
 
@@ -586,6 +747,7 @@ function setSelectedCategory(cat) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     showDefaultLeft();
     applyFilter(null);
+    resetNetworkZoom();
     return;
   }
 
@@ -595,6 +757,7 @@ function setSelectedCategory(cat) {
   });
   showCategoryLeft(cat);
   applyFilter(cat);
+  frameCategory(cat);
 }
 
 /* ---- Category button wiring ---- */

@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
 
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=21">
 
   <script src="https://unpkg.com/graphology@0.25.1/dist/graphology.umd.min.js"></script>
   <script src="https://unpkg.com/sigma@2.4.0/build/sigma.min.js"></script>
@@ -41,7 +41,7 @@
           together in the same post.<br><br>
           The hashtags extracted from these posts were then analysed and grouped into <strong><em>categories↘</em></strong>, revealing the different narratives and topics associated with the female body within the platform.
           <br><br>
-          Select a  <em>category↘</em> on the right to explore its hashtags.<br><br>
+          Select a <em>category↘</em> on the right to explore its hashtags. Zoom in to reveal more names, or pause over a node to see its nearest connections. Click a node to hold its connections, or switch to All links to see every relationship.<br><br>
           Where would you expect to find more explicit images, and which hashtags are they associated with?
         </div>
         <div class="network-nav-links">
@@ -57,6 +57,7 @@
     </div>
 
     <div id="graph-container">
+      <div class="network-connection-tools"><button type="button" id="networkConnections" aria-pressed="false">Essential links</button><span id="network-connection-status">Essential links · hover to explore · click to hold</span></div>
       <div class="network-zoom-tools" aria-label="Graph zoom controls">
         <button type="button" class="network-zoom-button" id="networkZoomIn" aria-label="Zoom in">+</button>
         <button type="button" class="network-zoom-button" id="networkZoomOut" aria-label="Zoom out">−</button>
@@ -75,6 +76,6 @@
   </section>
 
   <script src="network-posts.js?v=7"></script>
-  <script src="network.js?v=18"></script>
+  <script src="network.js?v=22"></script>
 </body>
 </html>
